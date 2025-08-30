@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maria Acioli | Estudante de Odontologia</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Estilos base e de layout */
+        :root {
+            --color-primary: #F4ACB7;
+            /* Rosa Delicado */
+            --color-secondary: #FFFFFF;
+            /* Branco para Seções */
+            --color-background: #FFF9FA;
+            /* Fundo Branco Rosado */
+            --color-text-title: #4A4A4A;
+            /* Cinza Escuro Suave */
+            --color-text-paragraph: #6B7280;
+            /* Cinza Padrão */
+            --color-shadow: rgba(244, 172, 183, 0.12);
+            /* Sombra Rosa Suave */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-paragraph);
+        }
+
+        /* Classes de Tema */
+        .text-theme-title {
+            color: var(--color-text-title);
+        }
+
+        .text-theme-paragraph {
+            color: var(--color-text-paragraph);
+        }
+
+        .text-theme-primary {
+            color: var(--color-primary);
+        }
+
+        .bg-theme-secondary {
+            background-color: var(--color-secondary);
+        }
+
+        .border-theme-secondary {
+            border-color: var(--color-secondary);
+        }
+
+        .border-theme-primary {
+            border-color: var(--color-primary);
+        }
+
+        .shadow-theme {
+            box-shadow: 0 10px 15px -3px var(--color-shadow);
+        }
+
+        .fill-theme-primary {
+            fill: var(--color-primary);
+        }
+
+        .form-checkbox-theme:checked {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .hover-text-theme-primary:hover {
+            color: var(--color-primary);
+        }
+
+        /* Novas Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Classes de Animação */
+        .animate-on-load {
+            opacity: 0;
+            /* Começa invisível */
+            animation-fill-mode: forwards;
+        }
+
+        .animate-fade-in-up {
+            animation-name: fadeInUp;
+            animation-duration: 0.6s;
+            animation-timing-function: ease-out;
+        }
+
+        .animate-scale-in {
+            animation-name: scaleIn;
+            animation-duration: 0.6s;
+            animation-timing-function: ease-out;
+        }
+
+        #password-modal>div,
+        #admin-panel>div {
+            animation: fadeInModal 0.3s ease-out forwards;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            /* Cinza claro */
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D1D5DB;
+            /* Cinza um pouco mais escuro */
+        }
+
+        /* Estilos para o Painel Admin e Modal */
+        #admin-panel,
+        #password-modal {
+            transition: opacity 0.3s ease;
+        }
+
+        #admin-panel.hidden,
+        #password-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #admin-panel input[type="color"] {
+            -webkit-appearance: none;
+            width: 5rem;
+            height: 2.5rem;
+            border: none;
+            cursor: pointer;
+            background: none;
+        }
+
+        #admin-panel input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        #admin-panel input[type="color"]::-webkit-color-swatch {
+            border: 1px solid #ccc;
+            border-radius: 0.375rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- O conteúdo do portfólio será renderizado aqui pelo JavaScript -->
+    <div id="portfolio-container" class="max-w-4xl mx-auto p-4 sm-p-8"></div>
+
+    <!-- Modal de Senha -->
+    <div id="password-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-[var(--color-background)] w-full max-w-sm rounded-3xl shadow-xl p-8 relative">
+            <button id="close-password-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800"><i
+                    class="ph-bold ph-x text-2xl"></i></button>
+            <h2 class="text-2xl font-bold mb-4 text-theme-title text-center">Acesso Restrito</h2>
+            <p class="text-center text-theme-paragraph mb-6">Por favor, digite a senha para continuar.</p>
+            <form id="password-form-modal">
+                <input type="password" id="password-input"
+                    class="w-full bg-gray-100 border border-gray-300 text-gray-800 rounded-md shadow-sm p-3 text-center focus:ring-2 focus:ring-theme-primary focus:border-theme-primary"
+                    placeholder="******">
+                <p id="password-error" class="text-red-500 text-sm text-center mt-2 h-5"></p>
+                <button type="submit"
+                    class="w-full mt-4 bg-theme-primary text-white py-3 px-4 rounded-md hover:bg-opacity-80 font-bold transition-colors">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Painel Administrativo (inicialmente oculto) -->
+    <div id="admin-panel"
+        class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-start p-4 z-50 overflow-y-auto">
+        <div id="admin-content" class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-6 relative my-10">
+            <!-- Conteúdo do admin será renderizado aqui -->
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4OJPDwjhEK13CkGFqpK-26KZsVdKrf_s",
+            authDomain: "portifolio-alrineide.firebaseapp.com",
+            projectId: "portifolio-alrineide",
+            storageBucket: "portifolio-alrineide.appspot.com",
+            messagingSenderId: "787973096971",
+            appId: "1:787973096971:web:4e5f106c095d6bdae8e90e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const portfolioDocRef = doc(db, "portfolio", "data");
+
+        // =================================================================================
+        // ESTADO INICIAL E GERENCIAMENTO DE DADOS
+        // =================================================================================
+
+        const defaultState = {
+            adminPassword: "123456",
+            theme: {
+                primary: '#F4ACB7',
+                secondary: '#FFFFFF',
+                background: '#FFF9FA',
+                textTitle: '#4A4A4A',
+                textParagraph: '#6B7280',
+            },
+            header: { visible: true, name: "Maria Aurineide Peixoto Acioli", title: "Estudante de Odontologia - 4º Período", imageUrl: "https://placehold.co/150x150/FFFFFF/F4ACB7?text=MA" },
+            about: { visible: true, text: "Fascinada pela arte de construir sorrisos e promover a saúde bucal. Minha jornada na odontologia é movida pela busca constante por conhecimento técnico e por um atendimento que valorize a individualidade e o bem-estar de cada paciente. Acredito que um sorriso saudável é a porta de entrada para uma vida mais feliz e confiante." },
+            journey: {
+                visible: true, items: [
+                    { id: 1, period: "4º Período", status: "Cursando", description: "Imersão em disciplinas pré-clínicas como dentística, periodontia e endodontia. Fase de aprimorar a destreza manual em laboratório, preparando-me para os desafios clínicos.", time: "Presente" },
+                    { id: 2, period: "2º e 3º Períodos", status: "Concluído", description: "Fundamentos em oclusão, patologia oral e anatomia dental. Primeiros contatos com materiais dentários e técnicas de escultura, construindo a base para a prática.", time: "2023" },
+                    { id: 3, period: "1º Período", status: "Concluído", description: "Base sólida nas ciências da saúde, como anatomia geral, fisiologia e histologia. Foi aqui que a paixão pela complexidade da face e da boca começou.", time: "2022" },
+                    { id: 4, period: "Próximos Passos", status: "Futuro", description: "Ansiosa pelo início dos atendimentos na clínica-escola, pelo contato direto com os pacientes e por aplicar todo o conhecimento teórico na prática, transformando vidas através do sorriso.", time: "2025" }
+                ]
+            },
+            interests: { visible: true, items: [{ id: 1, text: "Ortodontia e Ortopedia Facial" }, { id: 2, text: "Endodontia" }, { id: 3, text: "Implantodontia" }, { id: 4, text: "Odontopediatria" }] },
+            goals: { visible: true, items: [{ id: 1, text: "Concluir uma especialização em uma das minhas áreas de interesse." }, { id: 2, text: "Participar ativamente de ligas acadêmicas e projetos de pesquisa." }, { id: 3, text: "Realizar trabalho voluntário, levando saúde bucal para comunidades carentes." }] },
+            reports: {
+                visible: true, items: [
+                    { id: 1, title: "4º Período: O Desafio da Pré-Clínica", difficulties: "A maior dificuldade tem sido a simulação de tratamentos de canal em dentes de acrílico, que exige uma precisão milimétrica e muita paciência para não perfurar a raiz.", learnings: "Aprendi a ter mais calma e a confiar no processo. Cada erro foi uma lição, e a satisfação de conseguir obturar um canal corretamente pela primeira vez foi imensa, mostrando que estou no caminho certo." },
+                    { id: 2, title: "1º ao 3º Períodos: A Base de Tudo", difficulties: "O volume de detalhes em anatomia de cabeça e pescoço foi desafiador. Memorizar cada nervo, músculo e forame exigiu muita dedicação e diferentes métodos de estudo.", learnings: "O maior aprendizado foi entender como tudo está interligado. A 'ficha caiu' quando percebi como a oclusão dentária afeta a articulação temporomandibular (ATM) e a postura, vendo a boca como parte de um sistema complexo e integrado." }
+                ]
+            },
+            contact: {
+                visible: true, text: "Adoraria me conectar com outros estudantes e profissionais da área. Você pode me encontrar nas redes abaixo.", links: [
+                    { id: 'linkedin', name: "LinkedIn", url: "#", icon: "ph-linkedin-logo", visible: true },
+                    { id: 'email', name: "Email", url: "mailto:email@exemplo.com", icon: "ph-envelope-simple", visible: true },
+                    { id: 'instagram', name: "Instagram", url: "#", icon: "ph-instagram-logo", visible: true },
+                ]
+            }
+        };
+
+        let state = {};
+
+        const loadStateFromFirebase = async () => {
+            try {
+                const docSnap = await getDoc(portfolioDocRef);
+                if (docSnap.exists()) {
+                    // Merge with default state to ensure all keys are present
+                    state = Object.assign({}, JSON.parse(JSON.stringify(defaultState)), docSnap.data());
+                } else {
+                    console.log("No such document! Creating one with default data.");
+                    state = JSON.parse(JSON.stringify(defaultState));
+                    await saveStateToFirebase();
+                }
+            } catch (error) {
+                console.error("Error loading data from Firebase: ", error);
+                // Fallback to default state if Firebase fails
+                state = JSON.parse(JSON.stringify(defaultState));
+            }
+        };
+
+        const saveStateToFirebase = async () => {
+            try {
+                await setDoc(portfolioDocRef, state, { merge: true });
+                console.log("Data saved to Firebase successfully!");
+            } catch (error) {
+                console.error("Error saving data to Firebase: ", error);
+            }
+        };
+
+        // =================================================================================
+        // GERENCIAMENTO DO TEMA (CORES)
+        // =================================================================================
+        const applyTheme = () => {
+            const theme = state.theme;
+            const root = document.documentElement;
+
+            const hexToRgb = (hex) => {
+                let r = 0, g = 0, b = 0;
+                if (hex.length == 4) {
+                    r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16);
+                } else if (hex.length == 7) {
+                    r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16);
+                }
+                return `${r},${g},${b}`;
+            };
+
+            const shadowRgb = hexToRgb(theme.primary);
+            const shadowColor = `rgba(${shadowRgb}, 0.12)`;
+
+            root.style.setProperty('--color-primary', theme.primary);
+            root.style.setProperty('--color-secondary', theme.secondary);
+            root.style.setProperty('--color-background', theme.background);
+            root.style.setProperty('--color-text-title', theme.textTitle);
+            root.style.setProperty('--color-text-paragraph', theme.textParagraph);
+            root.style.setProperty('--color-shadow', shadowColor);
+        };
+
+
+        // =================================================================================
+        // FUNÇÕES DE RENDERIZAÇÃO DO PORTFÓLIO
+        // =================================================================================
+        const portfolioContainer = document.getElementById('portfolio-container');
+
+        const renderPortfolio = () => {
+            portfolioContainer.innerHTML = `
+                ${renderHeader()}
+                ${renderAbout()}
+                ${renderJourney()}
+                ${renderInterestsAndGoals()}
+                ${renderReports()}
+                ${renderContact()}
+                ${renderFooter()}
+            `;
+            // Trigger animations
+            const elementsToAnimate = document.querySelectorAll('.animate-on-load');
+            elementsToAnimate.forEach((el, index) => {
+                el.classList.add(el.dataset.animation || 'animate-fade-in-up');
+            });
+            addEventListeners();
+        };
+
+        const renderHeader = () => {
+            if (!state.header || !state.header.visible) return '';
+            return `<header class="text-center my-12">
+                <img src="${state.header.imageUrl}" alt="Foto de Perfil" class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto mb-6 border-4 border-theme-primary shadow-lg object-cover animate-on-load" data-animation="animate-scale-in" onerror="this.onerror=null;this.src='https://placehold.co/150x150/FFFFFF/F4ACB7?text=MA';">
+                <h1 class="text-3xl md:text-4xl font-bold text-theme-title animate-on-load" style="animation-delay: 100ms;">${state.header.name}</h1>
+                <p class="text-lg md:text-xl text-theme-primary mt-2 animate-on-load" style="animation-delay: 200ms;">${state.header.title}</p>
+            </header>`;
+        };
+
+        const renderAbout = () => {
+            if (!state.about || !state.about.visible) return '';
+            return `<section class="bg-theme-secondary p-8 rounded-3xl shadow-theme mb-12 animate-on-load" style="animation-delay: 300ms;">
+                <h2 class="text-2xl font-bold text-theme-title mb-4 flex items-center"><i class="ph-bold ph-user-circle text-theme-primary mr-3 text-3xl"></i> Sobre Mim</h2>
+                <p class="text-theme-paragraph leading-relaxed">${state.about.text}</p>
+            </section>`;
+        }
+
+        const renderJourney = () => {
+            if (!state.journey || !state.journey.visible) return '';
+            const itemsHtml = state.journey.items.map((item, index, arr) => `
+                <div class="relative animate-on-load" style="animation-delay: ${400 + index * 150}ms;">
+                    <!-- Icon -->
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-white rounded-full -left-4 top-0 ring-8 ring-[var(--color-background)]">
+                        <i class="ph-bold ph-book-open text-theme-primary"></i>
+                    </span>
+                    <!-- Content -->
+                    <div class="ml-10 ${index === arr.length - 1 ? '' : 'pb-10'}">
+                         <h3 class="flex items-center mb-1 text-lg font-semibold text-theme-title">${item.period} 
+                            ${item.status === 'Cursando' ? `<span class="bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3">Cursando</span>` : ''}
+                        </h3>
+                        <time class="block mb-2 text-sm font-normal leading-none text-gray-500">${item.time}</time>
+                        <p class="text-base font-normal text-theme-paragraph">${item.description}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            return `<section class="mb-12">
+                <h2 class="text-2xl font-bold text-theme-title mb-8 text-center flex items-center justify-center animate-on-load" style="animation-delay: 400ms;"><i class="ph-bold ph-graduation-cap text-theme-primary mr-3 text-3xl"></i> Minha Jornada Acadêmica</h2>
+                <div class="relative border-l-2 border-theme-primary border-opacity-30 ml-4">
+                   ${itemsHtml}
+                </div>
+            </section>`;
+        };
+
+        const renderInterestsAndGoals = () => {
+            const interestsHtml = (state.interests && state.interests.visible) ? `<div class="bg-theme-secondary p-8 rounded-3xl shadow-theme animate-on-load" style="animation-delay: 500ms;">
+                <h2 class="text-2xl font-bold text-theme-title mb-4 flex items-center"><i class="ph-bold ph-tooth text-theme-primary mr-3 text-3xl"></i> Áreas de Interesse</h2>
+                <ul class="space-y-3 text-theme-paragraph">
+                    ${state.interests.items.map(item => `<li class="flex items-center"><i class="ph-fill ph-check-circle text-theme-primary mr-2"></i> ${item.text}</li>`).join('')}
+                </ul></div>` : '';
+
+            const goalsHtml = (state.goals && state.goals.visible) ? `<div class="bg-theme-secondary p-8 rounded-3xl shadow-theme animate-on-load" style="animation-delay: 600ms;">
+                <h2 class="text-2xl font-bold text-theme-title mb-4 flex items-center"><i class="ph-bold ph-flag-checkered text-theme-primary mr-3 text-3xl"></i> Objetivos Futuros</h2>
+                <ul class="space-y-3 text-theme-paragraph">
+                        ${state.goals.items.map(item => `<li class="flex items-start"><i class="ph-fill ph-star text-theme-primary mr-2 mt-1"></i> ${item.text}</li>`).join('')}
+                </ul></div>` : '';
+
+            if (!interestsHtml && !goalsHtml) return '';
+            return `<div class="grid md:grid-cols-2 gap-8 mb-12">${interestsHtml}${goalsHtml}</div>`;
+        };
+
+        const renderReports = () => {
+            if (!state.reports || !state.reports.visible) return '';
+            const itemsHtml = state.reports.items.map((item, index) => `<div class="bg-theme-secondary p-6 rounded-3xl shadow-theme animate-on-load" style="animation-delay: ${700 + index * 150}ms;"><h3 class="font-bold text-lg text-theme-title mb-3">${item.title}</h3><div class="space-y-4"><div><h4 class="font-semibold text-theme-title">Principais Dificuldades:</h4><p class="text-theme-paragraph text-sm leading-relaxed">${item.difficulties}</p></div><div><h4 class="font-semibold text-theme-title">Maiores Aprendizados:</h4><p class="text-theme-paragraph text-sm leading-relaxed">${item.learnings}</p></div></div></div>`).join('');
+            return `<section class="mb-12">
+                <h2 class="text-2xl font-bold text-theme-title mb-8 text-center flex items-center justify-center animate-on-load" style="animation-delay: 700ms;"><i class="ph-bold ph-notebook text-theme-primary mr-3 text-3xl"></i> Resumos e Relatos dos Estudos</h2>
+                <div class="space-y-8">${itemsHtml}</div></section>`;
+        };
+
+        const renderContact = () => {
+            if (!state.contact || !state.contact.visible) return '';
+            const linksHtml = state.contact.links.filter(link => link.visible).map(link => `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover-text-theme-primary transition-colors duration-300"><i class="ph-bold ${link.icon} text-4xl"></i><span class="sr-only">${link.name}</span></a>`).join('');
+            return `<section class="text-center bg-theme-secondary shadow-theme p-8 rounded-3xl animate-on-load" style="animation-delay: 800ms;">
+                <h2 class="text-2xl font-bold text-theme-title mb-4">Vamos nos Conectar?</h2>
+                <p class="text-theme-paragraph mb-6 max-w-lg mx-auto">${state.contact.text}</p>
+                <div class="flex justify-center space-x-6">${linksHtml}</div></section>`;
+        };
+
+        const renderFooter = () => `
+            <footer class="text-center py-8 text-gray-500 text-sm">
+                <p>&copy; ${new Date().getFullYear()} ${state.header ? state.header.name : ''}. Todos os direitos reservados.</p>
+                <p class="mt-2"><a href="#" id="admin-link" class="hover-text-theme-primary">Minha área</a></p>
+            </footer>`;
+
+        // =================================================================================
+        // FUNÇÕES DE RENDERIZAÇÃO DO PAINEL ADMIN
+        // =================================================================================
+        const adminContent = document.getElementById('admin-content');
+        const colorLabels = { primary: 'Cor Principal (Detalhes)', secondary: 'Cor Secundária (Fundos)', background: 'Fundo da Página', textTitle: 'Cor dos Títulos', textParagraph: 'Cor dos Textos' };
+
+        const renderAdminPanel = () => {
+            adminContent.innerHTML = `
+                <button id="close-admin" class="absolute top-4 right-4 text-gray-500 hover:text-red-500"><i class="ph-bold ph-x text-2xl"></i></button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Painel Administrativo</h2>
+                
+                <div id="general-info-form" class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold mb-4 text-gray-800">Informações Principais</h3>
+                    <div class="space-y-3">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Título Principal (Nome)</label><input type="text" id="edit-header-name" value="${state.header.name}" class="w-full border-gray-300 rounded-md shadow-sm p-2 text-gray-800"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Subtítulo</label><input type="text" id="edit-header-title" value="${state.header.title}" class="w-full border-gray-300 rounded-md shadow-sm p-2 text-gray-800"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Caminho da Imagem de Perfil</label><input type="text" id="edit-header-image-url" value="${state.header.imageUrl}" class="w-full border-gray-300 rounded-md shadow-sm p-2 text-gray-800"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Texto "Sobre Mim"</label><textarea id="edit-about-text" rows="4" class="w-full border-gray-300 rounded-md shadow-sm p-2 text-gray-800">${state.about.text}</textarea></div>
+                    </div>
+                </div>
+                
+                <div id="password-form-admin" class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold mb-4 text-gray-800">Alterar Senha</h3>
+                    <div class="space-y-3">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label><input type="password" id="new-password" placeholder="Digite a nova senha" class="w-full border-gray-300 rounded-md shadow-sm p-2"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Nova Senha</label><input type="password" id="confirm-password" placeholder="Confirme a nova senha" class="w-full border-gray-300 rounded-md shadow-sm p-2"></div>
+                        <button id="save-password-btn" class="text-sm bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600">Salvar Nova Senha</button>
+                        <p id="password-message" class="text-xs mt-2"></p>
+                    </div>
+                </div>
+
+                <div id="theme-form" class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold mb-4 text-gray-800">Personalizar Cores</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                        ${Object.keys(state.theme).map(key => `<div class="flex items-center justify-between"><label class="text-sm text-gray-700">${colorLabels[key]}</label><input type="color" data-key="${key}" value="${state.theme[key]}"></div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="section-visibility-form">
+                    <h3 class="font-bold mb-3 text-gray-800">Visibilidade das Seções</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm text-gray-700">
+                        ${Object.keys(defaultState).filter(k => !['theme', 'adminPassword'].includes(k)).map(key => `<label class="flex items-center space-x-2"><input type="checkbox" data-section="${key}" class="form-checkbox h-4 w-4 form-checkbox-theme" ${state[key].visible ? 'checked' : ''}><span>${key.charAt(0).toUpperCase() + key.slice(1)}</span></label>`).join('')}
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="journey-form">
+                    <h3 class="font-bold mb-3 text-gray-800">Jornada Acadêmica</h3>
+                    ${state.journey.items.map(item => `
+                        <div class="p-3 border rounded-md mb-2 bg-white" data-id="${item.id}">
+                            <input type="text" value="${item.period}" class="w-full font-semibold border-b p-1 mb-1 text-gray-800" data-field="period" placeholder="Título do Período">
+                            <textarea class="w-full text-sm border-b p-1 text-gray-700" data-field="description" placeholder="Descrição">${item.description}</textarea>
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <input type="text" value="${item.status}" class="w-full text-sm border-b p-1 text-gray-700" data-field="status" placeholder="Status (Ex: Cursando)">
+                                <input type="text" value="${item.time}" class="w-full text-sm border-b p-1 text-gray-700" data-field="time" placeholder="Data (Ex: Presente)">
+                            </div>
+                            <button data-action="delete-journey" class="text-red-500 text-xs mt-2 hover:underline">Remover</button>
+                        </div>
+                    `).join('')}
+                    <button data-action="add-journey" class="mt-2 text-sm bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">+ Adicionar Período</button>
+                </div>
+
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="interests-form">
+                    <h3 class="font-bold mb-3 text-gray-800">Áreas de Interesse</h3>
+                    ${state.interests.items.map(item => `<div class="flex items-center mb-2" data-id="${item.id}"><input type="text" value="${item.text}" class="w-full border-b p-1 text-sm text-gray-700" data-field="text"><button data-action="delete-interest" class="ml-2 text-red-500 hover:text-red-700"><i class="ph-bold ph-trash"></i></button></div>`).join('')}
+                    <button data-action="add-interest" class="mt-2 text-sm bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">+ Adicionar Interesse</button>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="goals-form">
+                    <h3 class="font-bold mb-3 text-gray-800">Objetivos Futuros</h3>
+                    ${state.goals.items.map(item => `<div class="flex items-center mb-2" data-id="${item.id}"><input type="text" value="${item.text}" class="w-full border-b p-1 text-sm text-gray-700" data-field="text"><button data-action="delete-goal" class="ml-2 text-red-500 hover:text-red-700"><i class="ph-bold ph-trash"></i></button></div>`).join('')}
+                    <button data-action="add-goal" class="mt-2 text-sm bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">+ Adicionar Objetivo</button>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="reports-form">
+                     <h3 class="font-bold mb-3 text-gray-800">Resumos e Relatos</h3>
+                    ${state.reports.items.map(item => `
+                        <div class="p-3 border rounded-md mb-2 bg-white" data-id="${item.id}">
+                            <input type="text" value="${item.title}" class="w-full font-semibold border-b p-1 mb-1 text-gray-800" data-field="title">
+                            <h4 class="text-xs font-bold mt-2 text-gray-600">Dificuldades:</h4>
+                            <textarea class="w-full text-sm border-b p-1 text-gray-700" data-field="difficulties">${item.difficulties}</textarea>
+                            <h4 class="text-xs font-bold mt-2 text-gray-600">Aprendizados:</h4>
+                            <textarea class="w-full text-sm border-b p-1 text-gray-700" data-field="learnings">${item.learnings}</textarea>
+                            <button data-action="delete-report" class="text-red-500 text-xs mt-2 hover:underline">Remover</button>
+                        </div>
+                    `).join('')}
+                    <button data-action="add-report" class="mt-2 text-sm bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600">+ Adicionar Relato</button>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6" id="socials-form">
+                    <h3 class="font-bold mb-3 text-gray-800">Links Sociais</h3>
+                    ${state.contact.links.map(link => `<div class="grid grid-cols-[auto_1fr_auto] gap-3 items-center mb-2" data-id="${link.id}"><label class="flex items-center space-x-2 text-gray-700"><input type="checkbox" data-field="visible" class="form-checkbox h-4 w-4 form-checkbox-theme" ${link.visible ? 'checked' : ''}><i class="ph-bold ${link.icon} text-xl"></i></label><input type="text" value="${link.url}" class="w-full border-b p-1 text-sm text-gray-700" data-field="url"></div>`).join('')}
+                </div>
+
+                <button id="save-all" class="w-full bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 font-bold">Salvar Todas as Alterações e Fechar</button>
+            `;
+            addAdminEventListeners();
+        }
+
+        // =================================================================================
+        // LÓGICA DO PAINEL ADMIN E MANIPULAÇÃO DE EVENTOS
+        // =================================================================================
+        const adminPanel = document.getElementById('admin-panel');
+        const passwordModal = document.getElementById('password-modal');
+        let isAuthenticated = false;
+
+        const openAdminPanel = () => {
+            if (isAuthenticated) {
+                renderAdminPanel();
+                adminPanel.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                passwordModal.classList.remove('hidden');
+            }
+        };
+
+        const closeAdminPanel = async () => {
+            await saveStateToFirebase();
+            adminPanel.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // Re-render portfolio with updated data from state
+            applyTheme();
+            renderPortfolio();
+        };
+
+        const closePasswordModal = () => {
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            passwordModal.classList.add('hidden');
+            passwordInput.value = '';
+            passwordError.textContent = '';
+        };
+
+        const handlePasswordSubmit = (e) => {
+            e.preventDefault();
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            if (passwordInput.value === state.adminPassword) {
+                isAuthenticated = true;
+                closePasswordModal();
+                openAdminPanel();
+            } else {
+                passwordError.textContent = 'Senha incorreta. Tente novamente.';
+                passwordInput.value = '';
+                passwordInput.focus();
+                setTimeout(() => passwordError.textContent = '', 3000);
+            }
+        };
+
+        const addEventListeners = () => {
+            document.getElementById('admin-link').addEventListener('click', e => { e.preventDefault(); openAdminPanel(); });
+            document.getElementById('password-form-modal').addEventListener('submit', handlePasswordSubmit);
+            document.getElementById('close-password-modal').addEventListener('click', closePasswordModal);
+        };
+
+        function addAdminEventListeners() {
+            document.getElementById('close-admin').addEventListener('click', closeAdminPanel);
+            document.getElementById('save-all').addEventListener('click', closeAdminPanel);
+
+            adminContent.addEventListener('input', e => {
+                const target = e.target;
+                const formSection = target.closest('[id$="-form"]');
+                if (!formSection) return;
+
+                if (formSection.id === "general-info-form") {
+                    state.header.name = document.getElementById('edit-header-name').value;
+                    state.header.title = document.getElementById('edit-header-title').value;
+                    state.header.imageUrl = document.getElementById('edit-header-image-url').value;
+                    state.about.text = document.getElementById('edit-about-text').value;
+                    return;
+                }
+
+                const id = target.closest('[data-id]')?.dataset.id;
+                const field = target.dataset.field;
+                const key = target.dataset.key;
+
+                if (formSection.id === "theme-form" && key) { state.theme[key] = target.value; applyTheme(); }
+                if (formSection.id === "journey-form" && id) { state.journey.items.find(i => i.id == id)[field] = target.value; }
+                if (formSection.id === "interests-form" && id) { state.interests.items.find(i => i.id == id)[field] = target.value; }
+                if (formSection.id === "goals-form" && id) { state.goals.items.find(i => i.id == id)[field] = target.value; }
+                if (formSection.id === "reports-form" && id) { state.reports.items.find(i => i.id == id)[field] = target.value; }
+                if (formSection.id === "socials-form" && id) { state.contact.links.find(i => i.id == id)[field] = target.type === 'checkbox' ? target.checked : target.value; }
+                if (formSection.id === "section-visibility-form") { const section = e.target.dataset.section; if (state[section]) state[section].visible = e.target.checked; }
+            });
+
+            adminContent.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                if (button.id === 'save-password-btn') {
+                    const newPass = document.getElementById('new-password');
+                    const confirmPass = document.getElementById('confirm-password');
+                    const message = document.getElementById('password-message');
+                    if (newPass.value && newPass.value === confirmPass.value) {
+                        state.adminPassword = newPass.value;
+                        message.textContent = 'Senha alterada com sucesso!';
+                        message.style.color = 'green';
+                        newPass.value = '';
+                        confirmPass.value = '';
+                    } else {
+                        message.textContent = 'As senhas não conferem ou estão em branco.';
+                        message.style.color = 'red';
+                    }
+                    setTimeout(() => message.textContent = '', 3000);
+                    return;
+                }
+
+                const action = button.dataset.action;
+                const id = button.closest('[data-id]')?.dataset.id;
+
+                const actions = {
+                    "delete-journey": () => state.journey.items = state.journey.items.filter(i => i.id != id),
+                    "add-journey": () => state.journey.items.push({ id: Date.now(), period: "Novo Período", description: "Descrição...", status: "Status", time: "Data" }),
+                    "delete-interest": () => state.interests.items = state.interests.items.filter(i => i.id != id),
+                    "add-interest": () => state.interests.items.push({ id: Date.now(), text: "Novo interesse..." }),
+                    "delete-goal": () => state.goals.items = state.goals.items.filter(i => i.id != id),
+                    "add-goal": () => state.goals.items.push({ id: Date.now(), text: "Novo objetivo..." }),
+                    "delete-report": () => state.reports.items = state.reports.items.filter(i => i.id != id),
+                    "add-report": () => state.reports.items.push({ id: Date.now(), title: "Novo Relato", difficulties: "Dificuldades...", learnings: "Aprendizados..." }),
+                };
+
+                if (actions[action]) { actions[action](); renderAdminPanel(); }
+            });
+        }
+
+        // =================================================================================
+        // INICIALIZAÇÃO
+        // =================================================================================
+        const startApp = async () => {
+            await loadStateFromFirebase();
+            applyTheme();
+            renderPortfolio();
+        };
+
+        startApp();
+
+    </script>
+
+</body>
+
+</html>
